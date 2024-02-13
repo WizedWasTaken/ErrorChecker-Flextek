@@ -9,6 +9,7 @@ namespace BIZ
     {
         public ClassBiz()
         {
+
         }
     }
 }

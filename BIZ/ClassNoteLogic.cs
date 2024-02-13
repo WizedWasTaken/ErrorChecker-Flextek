@@ -10,7 +10,6 @@ using System;
 
 namespace BIZ
 {
-    public class ClassNoteLogic : ClassErrorHandling
     {
         private ClassNotes _classNotes = new();
         private ClassFileHandler _fileHandler = new();
@@ -20,42 +19,31 @@ namespace BIZ
 
         public ClassNoteLogic()
         {
+            LoadNotes();
         }
 
-        public void AddNewNote(string selectedText)
         {
-            var newNote = new Note { Content = $"{selectedText}" };
-            _classNotes.Notes.Add(newNote);
             Notify(nameof(Notes));
         }
 
         public void DeleteAllNotes()
         {
-            _classNotes.Notes.Clear();
             Notify(nameof(Notes));
         }
 
         public void LoadNotes()
         {
-            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
-
-            string filePath = _fileHandler.LoadFromFile(initialDirectory);
-
-            if (string.IsNullOrWhiteSpace(filePath))
             {
-                filePath = _filePath;
+                var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(json);
+                if (notesFromJson != null)
+                {
+                    _classNotes.Notes = notesFromJson;
+                    Notify(nameof(Notes));
+                }
             }
-
-            SaveNotes();
-            _filePath = filePath;
-
-            string json = File.ReadAllText(filePath);
-            var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(json);
-            if (notesFromJson != null)
+            catch (FileNotFoundException)
             {
-                _classNotes.Notes = notesFromJson;
-                Notify(nameof(Notes));
+                // Do nothing
             }
         }
 
@@ -83,15 +71,6 @@ namespace BIZ
             Notify(nameof(Notes));
         }
 
-        public void SaveNotes()
-        {
-            string filePath = _filePath;
-            string json = JsonConvert.SerializeObject(Notes, Formatting.Indented);
-            File.WriteAllText(filePath, json);
-            File.WriteAllText("notes.json", json);
-        }
-
-        public void SaveNoteToFilePath()
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
@@ -101,10 +80,11 @@ namespace BIZ
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 MessageBox.Show("Fil stien kunne ikke findes.");
-            }
+        }
 
+        public void SaveNotes()
+        {
             string json = JsonConvert.SerializeObject(Notes, Formatting.Indented);
-            File.WriteAllText(filePath, json);
         }
     }
 }

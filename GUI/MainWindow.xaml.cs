@@ -49,7 +49,6 @@ namespace GUI
         /// <param name="e"></param>
         private void DeleteNoteButton_Click(object sender, RoutedEventArgs e)
         {
-            BIZ.RemoveSpecificNote((Note)((MenuItem)sender).DataContext);
         }
 
         /// <summary>

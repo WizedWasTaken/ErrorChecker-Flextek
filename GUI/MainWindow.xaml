@@ -72,8 +72,6 @@
                             <MenuItem Header="Tilføj ny note" Click="AddNoteButton_Click"/>
                             <MenuItem Header="Slet alle noter" Click="DeleteAllNotesButton_Click"/>
                             <MenuItem Header="Kopier alle noter" Click="CopyAllNotesButton_Click"/>
-                            <MenuItem Header="Indlæs noter" Click="LoadNotesButton_Click"/>
-                            <MenuItem Header="Gem noter" Click="SaveNotesButton_Click"/>
                             <!-- Add other menu items as needed -->
                         </ContextMenu>
                     </ListBox.ContextMenu>
@@ -119,16 +117,6 @@
         <!-- Right side (ERROR & LOGS) -->
         <Grid Grid.Column="2" Margin="10">
             <!-- This area can be populated with your error and log UI elements -->
-            <TextBox x:Name="ErrorTextBox" Style="{StaticResource StyledTextBox}" Text="{Binding ErrorText.Text, UpdateSourceTrigger=PropertyChanged}" AcceptsTab="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto">
-                <TextBox.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="ApplicationCommands.Copy" Header="Kopier"/>
-                        <MenuItem Command="ApplicationCommands.Cut" Header="Klip"/>
-                        <MenuItem Command="ApplicationCommands.Paste" Header="Indsæt"/>
-                        <MenuItem Header="Opret Note" Click="CreateNoteWithMarkedTextButton_Click"/>
-                    </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>
         </Grid>
     </Grid>
 </Window>
