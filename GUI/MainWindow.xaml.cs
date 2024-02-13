@@ -28,7 +28,7 @@ namespace GUI
 
         private void AddNoteButton_Click(object sender, RoutedEventArgs e)
         {
-            BIZ.AddNewNote();
+            BIZ.AddNewNote("Ny Note");
         }
 
         private void DeleteAllNotesButton_Click(object sender, RoutedEventArgs e)
@@ -49,7 +49,7 @@ namespace GUI
         /// <param name="e"></param>
         private void DeleteNoteButton_Click(object sender, RoutedEventArgs e)
         {
-            BIZ.RemoveSpecificNote((Note)((Button)sender).DataContext);
+            BIZ.RemoveSpecificNote((Note)((MenuItem)sender).DataContext);
         }
 
         /// <summary>
@@ -103,6 +103,17 @@ namespace GUI
         private void LoadNotesButton_Click(object sender, RoutedEventArgs e)
         {
             BIZ.LoadNotes();
+        }
+
+        private void SaveNotesButton_Click(object sender, RoutedEventArgs e)
+        {
+            BIZ.SaveNoteToFilePath();
+        }
+
+        private void CreateNoteWithMarkedTextButton_Click(object sender, RoutedEventArgs e)
+        {
+            string selectedText = ErrorTextBox.SelectedText;
+            BIZ.AddNewNote(selectedText);
         }
     }
 }

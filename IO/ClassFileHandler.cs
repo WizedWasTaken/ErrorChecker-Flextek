@@ -6,16 +6,30 @@ namespace IO;
 
 public class ClassFileHandler
 {
+    private string basePath;
+
     public ClassFileHandler()
     {
     }
 
-    public string LoadFromFile()
+    public string LoadFromFile(string initialDirectory)
     {
         Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
-        dlg.DefaultExt = ".txt";
-        dlg.Filter = "Text documents (.txt)|*.txt";
+
+        // Ensure the directory exists before trying to open it
+        if (!Directory.Exists(initialDirectory) && !initialDirectory.Equals(""))
+        {
+            Directory.CreateDirectory(initialDirectory);
+        }
+
+        // Set the initial directory of the OpenFileDialog to the specified path
+        dlg.Title = "Åben Fil:";
+
+        if (!initialDirectory.Equals(""))
+        {
+            dlg.InitialDirectory = initialDirectory;
+        }
 
         bool? result = dlg.ShowDialog();
 
@@ -24,19 +38,19 @@ public class ClassFileHandler
             string filename = dlg.FileName;
             try
             {
-                return File.ReadAllText(filename);
+                return filename;
             }
             catch (IOException e)
             {
-                return null;
+                return "";
             }
             catch (Exception e)
             {
-                return null;
+                return "";
             }
         }
 
-        return null;
+        return "";
     }
 
     public string SaveToFile(string text)
@@ -58,14 +72,14 @@ public class ClassFileHandler
             }
             catch (IOException e)
             {
-                return null;
+                return "";
             }
             catch (Exception e)
             {
-                return null;
+                return "";
             }
         }
 
-        return null;
+        return "";
     }
 }

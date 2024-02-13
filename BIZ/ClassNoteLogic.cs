@@ -6,50 +6,59 @@ using System.IO;
 using System.Windows;
 using IO;
 using Repository.models;
+using System;
 
 namespace BIZ
 {
-    public class ClassNoteLogic : ClassNotify
+    public class ClassNoteLogic : ClassErrorHandling
     {
         private ClassNotes _classNotes = new();
+        private ClassFileHandler _fileHandler = new();
+        private string _filePath = "notes.json";
 
         public ObservableCollection<Note> Notes => new(_classNotes.Notes);
 
         public ClassNoteLogic()
         {
-            LoadNotes();
         }
 
-        public void AddNewNote()
+        public void AddNewNote(string selectedText)
         {
-            var newNote = new Note { Content = "New Note" };
-            Notes.Add(newNote);
+            var newNote = new Note { Content = $"{selectedText}" };
+            _classNotes.Notes.Add(newNote);
             Notify(nameof(Notes));
         }
 
         public void DeleteAllNotes()
         {
-            Notes.Clear();
+            _classNotes.Notes.Clear();
             Notify(nameof(Notes));
         }
 
         public void LoadNotes()
         {
-            try
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
+
+            string filePath = _fileHandler.LoadFromFile(initialDirectory);
+
+            if (string.IsNullOrWhiteSpace(filePath))
             {
-                string json = File.ReadAllText("notes.json");
-                var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(json);
-                if (notesFromJson != null)
-                {
-                    _classNotes.Notes = notesFromJson;
-                    Notify(nameof(Notes));
-                }
+                filePath = _filePath;
             }
-            catch (FileNotFoundException)
+
+            SaveNotes();
+            _filePath = filePath;
+
+            string json = File.ReadAllText(filePath);
+            var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(json);
+            if (notesFromJson != null)
             {
-                // Do nothing
+                _classNotes.Notes = notesFromJson;
+                Notify(nameof(Notes));
             }
         }
+
 
         public string CopyAllNotes()
         {
@@ -66,6 +75,7 @@ namespace BIZ
         {
             if (!_classNotes.Notes.Contains(note))
             {
+                MessageBox.Show("Noten blev ikke fundet? \n\nVed ikke hvordan det her er muligt... Det virkede ikke i test, så fandt en ret varm hotfix :D");
                 return;
             }
 
@@ -75,10 +85,26 @@ namespace BIZ
 
         public void SaveNotes()
         {
+            string filePath = _filePath;
             string json = JsonConvert.SerializeObject(Notes, Formatting.Indented);
+            File.WriteAllText(filePath, json);
             File.WriteAllText("notes.json", json);
         }
 
+        public void SaveNoteToFilePath()
+        {
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
 
+            string filePath = _fileHandler.LoadFromFile(initialDirectory);
+            _filePath = filePath;
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                MessageBox.Show("Fil stien kunne ikke findes.");
+            }
+
+            string json = JsonConvert.SerializeObject(Notes, Formatting.Indented);
+            File.WriteAllText(filePath, json);
+        }
     }
 }

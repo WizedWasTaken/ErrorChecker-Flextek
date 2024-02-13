@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GUI"
+        xmlns:local="clr-namespace:GUI" xmlns:biz="clr-namespace:BIZ;assembly=BIZ" d:DataContext="{d:DesignInstance Type=biz:ClassBiz}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Background="#F0F4F8">
@@ -59,6 +59,8 @@
             <StackPanel Grid.Row="0" Margin="10" VerticalAlignment="Top">
                 <Image Source="./assets/FLEXT_LOGO_B_CMYK.png" Height="60" Margin="0,0,0,20"/>
                 <Button Content="Ny Note" Style="{StaticResource StyledButton}" Click="AddNoteButton_Click"/>
+                <Button Content="Indlæs noter" Style="{StaticResource StyledButton}" Click="LoadNotesButton_Click"/>
+                <Button Content="Gem noter" Style="{StaticResource StyledButton}" Click="SaveNotesButton_Click"/>
                 <Button Content="Slet alle noter" Style="{StaticResource StyledButton}" Click="DeleteAllNotesButton_Click"/>
             </StackPanel>
 
@@ -70,7 +72,8 @@
                             <MenuItem Header="Tilføj ny note" Click="AddNoteButton_Click"/>
                             <MenuItem Header="Slet alle noter" Click="DeleteAllNotesButton_Click"/>
                             <MenuItem Header="Kopier alle noter" Click="CopyAllNotesButton_Click"/>
-                            <MenuItem Header="Indlæs andre noter" Click="LoadNotesButton_Click"/>
+                            <MenuItem Header="Indlæs noter" Click="LoadNotesButton_Click"/>
+                            <MenuItem Header="Gem noter" Click="SaveNotesButton_Click"/>
                             <!-- Add other menu items as needed -->
                         </ContextMenu>
                     </ListBox.ContextMenu>
@@ -116,7 +119,16 @@
         <!-- Right side (ERROR & LOGS) -->
         <Grid Grid.Column="2" Margin="10">
             <!-- This area can be populated with your error and log UI elements -->
-            <TextBox Style="{StaticResource StyledTextBox}" AcceptsTab="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+            <TextBox x:Name="ErrorTextBox" Style="{StaticResource StyledTextBox}" Text="{Binding ErrorText.Text, UpdateSourceTrigger=PropertyChanged}" AcceptsTab="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.Copy" Header="Kopier"/>
+                        <MenuItem Command="ApplicationCommands.Cut" Header="Klip"/>
+                        <MenuItem Command="ApplicationCommands.Paste" Header="Indsæt"/>
+                        <MenuItem Header="Opret Note" Click="CreateNoteWithMarkedTextButton_Click"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
         </Grid>
     </Grid>
 </Window>
