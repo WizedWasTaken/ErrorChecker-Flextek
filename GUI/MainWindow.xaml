@@ -9,8 +9,10 @@
         Background="#F0F4F8">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
         <!-- Updated TextBox Style -->
-        <Style x:Key="StyledTextBox" TargetType="TextBox">
+        <Style x:Key="StyledTextBox" TargetType="RichTextBox">
             <Setter Property="BorderBrush" Value="#007aa2"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Background" Value="#FFFFFF"/>
@@ -90,6 +92,7 @@
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
+                                    <!-- Existing TextBox for note content -->
                                     <TextBox Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"
                                              HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                              Text="{Binding Content, UpdateSourceTrigger=PropertyChanged}"
@@ -103,6 +106,15 @@
                                             </ContextMenu>
                                         </TextBox.ContextMenu>
                                     </TextBox>
+                                    <!-- Button with Arrow -->
+                                    <Button Grid.Row="1" Content="➤" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                            ToolTip="Gå til tekst" Click="NoteClick_Handler"
+                                            BorderThickness="0" Background="Transparent" Foreground="Black"
+                                            Width="20" Height="20" Padding="0" Margin="0,5,5,5"
+                                            FontStyle="Normal" FontSize="12"
+                                            Visibility="{Binding IsFromErrorTextBox, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    </Button>
+
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -117,17 +129,19 @@
         <!-- Right side (ERROR & LOGS) -->
         <Grid Grid.Column="2" Margin="10">
             <!-- This area can be populated with your error and log UI elements -->
-            <TextBox x:Name="ErrorTextBox" Style="{StaticResource StyledTextBox}" Text="{Binding ErrorText.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10">
-                <TextBox.ContextMenu>
+            <RichTextBox x:Name="ErrorTextBox" Style="{StaticResource StyledTextBox}" IsReadOnly="True" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10">
+                <RichTextBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Command="ApplicationCommands.Copy" Header="Kopier"/>
-                        <MenuItem Command="ApplicationCommands.Cut" Header="Klip"/>
-                        <MenuItem Command="ApplicationCommands.Paste" Header="Indsæt"/>
-                        <MenuItem Header="Opret ny note med markeret text" Click="CreateNoteWithMarkedTextButton_Click" />
+                        <!-- Removed Cut and Paste as it's read-only -->
+                        <MenuItem Header="Opret ny note med markeret text" Click="CreateNoteWithMarkedTextButton_Click"/>
                         <MenuItem Header="Slet Alt" Click="DeleteAllErrorButton_Click"/>
                     </ContextMenu>
-                </TextBox.ContextMenu>
-            </TextBox>
+                </RichTextBox.ContextMenu>
+                <FlowDocument>
+
+                </FlowDocument>
+            </RichTextBox>
         </Grid>
     </Grid>
 </Window>

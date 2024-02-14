@@ -25,7 +25,7 @@ namespace BIZ
                 //Inital Directory to "This PC"
                 string initialDirectory = "";
                 // TODO: Kig på encoding
-                string filePath = _fileHandler.LoadFromFile(initialDirectory);
+                string filePath = ClassFileHandler.LoadFromFile(initialDirectory);
 
                 string text = File.ReadAllText(filePath);
                 if (text.Length > 0)

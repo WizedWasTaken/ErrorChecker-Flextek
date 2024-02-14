@@ -6,63 +6,51 @@ namespace IO;
 
 public class ClassFileHandler
 {
-    private string basePath;
-
     public ClassFileHandler()
     {
     }
 
-    public string LoadFromFile(string initialDirectory)
+    public static string LoadFromFile(string initialDirectory)
     {
-        Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+        Microsoft.Win32.OpenFileDialog dlg = new();
 
+        if (initialDirectory != "")
+        {
+            dlg.InitialDirectory = initialDirectory;
+        }
 
         bool? result = dlg.ShowDialog();
 
-        if (result == true)
+        if (result != true) return "";
+
+        string filename = dlg.FileName;
+        try
         {
-            string filename = dlg.FileName;
-            try
-            {
-                return filename;
-            }
-            catch (IOException e)
-            {
-                return "";
-            }
-            catch (Exception e)
-            {
-                return "";
-            }
+            return filename;
         }
-        return "";
+        catch
+        {
+            return "";
+        }
     }
 
-    public string SaveToFile(string text)
+    public static string SaveToFile(string text)
     {
-        Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+        Microsoft.Win32.SaveFileDialog dlg = new();
 
+        bool? result = dlg.ShowDialog();
 
-        Nullable<bool> result = dlg.ShowDialog();
+        if (result != true) return "";
 
-        if (result == true)
+        string filename = dlg.FileName;
+        try
         {
-            string filename = dlg.FileName;
-            try
-            {
-                File.WriteAllText(filename, text);
-                return filename;
-            }
-            catch (IOException e)
-            {
-                return "";
-            }
-            catch (Exception e)
-            {
-                return "";
-            }
+            File.WriteAllText(filename, text);
+            return filename;
         }
-
-        return "";
+        catch
+        {
+            return "";
+        }
     }
 }

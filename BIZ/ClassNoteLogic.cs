@@ -12,8 +12,8 @@ namespace BIZ
 {
     public class ClassNoteLogic : ClassErrorHandling
     {
-        private ClassNotes _classNotes = new();
-        private ClassFileHandler _fileHandler = new();
+        private readonly ClassNotes _classNotes = new();
+        private readonly ClassFileHandler _fileHandler = new();
         private string _filePath = "notes.json";
 
         public ObservableCollection<Note> Notes => new(_classNotes.Notes);
@@ -24,9 +24,9 @@ namespace BIZ
             LoadNotes();
         }
 
-        public void AddNewNote(string content)
+        public void AddNewNote(string content, string copiedText, bool isFromErrorTextBox, int startIndex)
         {
-            _classNotes.Notes.Add(new Note { Content = $"{content}" });
+            _classNotes.Notes.Add(new Note { Content = $"{content}", CopiedText = $"{copiedText}", IsFromErrorTextBox = isFromErrorTextBox, StartPosition = startIndex });
             Notify(nameof(Notes));
         }
 
@@ -82,7 +82,7 @@ namespace BIZ
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
 
-            string filePath = _fileHandler.LoadFromFile(initialDirectory);
+            string filePath = ClassFileHandler.LoadFromFile(initialDirectory);
             _filePath = filePath;
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -97,7 +97,7 @@ namespace BIZ
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
-            string filePath = _fileHandler.LoadFromFile(initialDirectory);
+            string filePath = ClassFileHandler.LoadFromFile(initialDirectory);
             _filePath = filePath;
             if (string.IsNullOrWhiteSpace(filePath))
             {
