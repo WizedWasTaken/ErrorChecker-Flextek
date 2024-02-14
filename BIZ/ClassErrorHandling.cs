@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using System.Windows;
 using IO;
@@ -19,16 +20,28 @@ namespace BIZ
 
         private void FindAndLoadErrorFile()
         {
-            //Inital Directory to "This PC"
-            string initialDirectory = "";
-            // TODO: Kig på encoding
-            string filePath = _fileHandler.LoadFromFile(initialDirectory);
-
-            string text = File.ReadAllText(filePath);
-            if (text.Length > 0)
+            try
             {
-                ErrorText.Text = text;
+                //Inital Directory to "This PC"
+                string initialDirectory = "";
+                // TODO: Kig på encoding
+                string filePath = _fileHandler.LoadFromFile(initialDirectory);
+
+                string text = File.ReadAllText(filePath);
+                if (text.Length > 0)
+                {
+                    ErrorText.Text = text;
+                }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show("Der skete en fejl under indlæsning af fejltekst. \n\n" + e.Message);
+            }
+        }
+
+        public void ClearErrorText()
+        {
+            ErrorText.Text = "";
         }
     }
 }

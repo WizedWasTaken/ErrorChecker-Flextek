@@ -24,15 +24,18 @@ public class ClassFileHandler
             string filename = dlg.FileName;
             try
             {
+                return filename;
             }
             catch (IOException e)
             {
+                return "";
             }
             catch (Exception e)
             {
+                return "";
             }
         }
-
+        return "";
     }
 
     public string SaveToFile(string text)
@@ -52,11 +55,14 @@ public class ClassFileHandler
             }
             catch (IOException e)
             {
+                return "";
             }
             catch (Exception e)
             {
+                return "";
             }
         }
 
+        return "";
     }
 }

@@ -10,6 +10,7 @@ using System;
 
 namespace BIZ
 {
+    public class ClassNoteLogic : ClassErrorHandling
     {
         private ClassNotes _classNotes = new();
         private ClassFileHandler _fileHandler = new();
@@ -19,34 +20,39 @@ namespace BIZ
 
         public ClassNoteLogic()
         {
+            _classNotes = new ClassNotes();
             LoadNotes();
         }
 
+        public void AddNewNote(string content)
         {
+            _classNotes.Notes.Add(new Note { Content = $"{content}" });
             Notify(nameof(Notes));
         }
 
         public void DeleteAllNotes()
         {
+            _classNotes.Notes.Clear();
             Notify(nameof(Notes));
         }
 
         public void LoadNotes()
         {
+            try
             {
-                var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(json);
+                string jsonString = File.ReadAllText(_filePath);
+                var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(jsonString);
                 if (notesFromJson != null)
                 {
                     _classNotes.Notes = notesFromJson;
                     Notify(nameof(Notes));
                 }
             }
-            catch (FileNotFoundException)
+            catch (Exception e)
             {
-                // Do nothing
+                MessageBox.Show("Der skete en fejl under indlæsning af noter. \n\n" + e.Message);
             }
         }
-
 
         public string CopyAllNotes()
         {
@@ -71,6 +77,7 @@ namespace BIZ
             Notify(nameof(Notes));
         }
 
+        public void SaveNoteToFilePath()
         {
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
@@ -80,11 +87,39 @@ namespace BIZ
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 MessageBox.Show("Fil stien kunne ikke findes.");
+                return;
+            }
+
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(Notes, Formatting.Indented));
+        }
+
+        public void LoadNotesFromFilePath()
+        {
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            string initialDirectory = Path.Combine(documentsPath, "Flextek", "ErrorCatching");
+            string filePath = _fileHandler.LoadFromFile(initialDirectory);
+            _filePath = filePath;
+            if (string.IsNullOrWhiteSpace(filePath))
+            {
+                MessageBox.Show("Fil stien kunne ikke findes.");
+                return;
+            }
+
+            string jsonString = File.ReadAllText(filePath);
+            {
+                var notesFromJson = JsonConvert.DeserializeObject<List<Note>>(jsonString);
+                if (notesFromJson != null)
+                {
+                    _classNotes.Notes = notesFromJson;
+                    Notify(nameof(Notes));
+                }
+            }
         }
 
         public void SaveNotes()
         {
             string json = JsonConvert.SerializeObject(Notes, Formatting.Indented);
+            File.WriteAllText(_filePath, json);
         }
     }
 }

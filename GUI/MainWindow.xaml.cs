@@ -49,6 +49,14 @@ namespace GUI
         /// <param name="e"></param>
         private void DeleteNoteButton_Click(object sender, RoutedEventArgs e)
         {
+            // Assuming you have a way to identify the selected note to delete
+            var menuItem = sender as MenuItem;
+            var contextMenu = menuItem?.Parent as ContextMenu;
+            var textBox = contextMenu?.PlacementTarget as TextBox;
+            if (textBox != null && textBox.DataContext is Note note)
+            {
+                BIZ.RemoveSpecificNote(note);
+            }
         }
 
         /// <summary>
@@ -101,7 +109,7 @@ namespace GUI
 
         private void LoadNotesButton_Click(object sender, RoutedEventArgs e)
         {
-            BIZ.LoadNotes();
+            BIZ.LoadNotesFromFilePath();
         }
 
         private void SaveNotesButton_Click(object sender, RoutedEventArgs e)
@@ -113,6 +121,11 @@ namespace GUI
         {
             string selectedText = ErrorTextBox.SelectedText;
             BIZ.AddNewNote(selectedText);
+        }
+
+        private void DeleteAllErrorButton_Click(object sender, RoutedEventArgs e)
+        {
+            BIZ.ClearErrorText();
         }
     }
 }

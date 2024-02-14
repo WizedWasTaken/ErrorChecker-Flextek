@@ -117,6 +117,17 @@
         <!-- Right side (ERROR & LOGS) -->
         <Grid Grid.Column="2" Margin="10">
             <!-- This area can be populated with your error and log UI elements -->
+            <TextBox x:Name="ErrorTextBox" Style="{StaticResource StyledTextBox}" Text="{Binding ErrorText.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10">
+                <TextBox.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="ApplicationCommands.Copy" Header="Kopier"/>
+                        <MenuItem Command="ApplicationCommands.Cut" Header="Klip"/>
+                        <MenuItem Command="ApplicationCommands.Paste" Header="Indsæt"/>
+                        <MenuItem Header="Opret ny note med markeret text" Click="CreateNoteWithMarkedTextButton_Click" />
+                        <MenuItem Header="Slet Alt" Click="DeleteAllErrorButton_Click"/>
+                    </ContextMenu>
+                </TextBox.ContextMenu>
+            </TextBox>
         </Grid>
     </Grid>
 </Window>
